@@ -1,4 +1,9 @@
-export const up = async (db) => {
+import { Kysely } from "kysely";
+
+/**
+ * @param db {Kysely<any>}
+ */
+export async function up(db) {
   await db.schema
     .createTable("tester")
     .addColumn("id", "serial", (col) => col.primaryKey())
@@ -19,8 +24,11 @@ export const up = async (db) => {
       },
     ])
     .execute();
-};
+}
 
-export const down = async (db) => {
+/**
+ * @param db {Kysely<any>}
+ */
+export async function down(db) {
   await db.schema.dropTable("tester").execute();
-};
+}
