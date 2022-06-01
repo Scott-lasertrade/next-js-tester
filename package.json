@@ -10,10 +10,10 @@
     "remove": "sst remove"
   },
   "dependencies": {
-    "@serverless-stack/cli": "1.0.2",
-    "@serverless-stack/resources": "1.0.2",
+    "@serverless-stack/cli": "1.2.13",
+    "@serverless-stack/resources": "1.2.13",
     "@sls-next/lambda-at-edge": "^3.7.0",
-    "aws-cdk-lib": "2.20.0",
+    "aws-cdk-lib": "2.24.0",
     "kysely": "^0.16.11",
     "kysely-data-api": "^0.0.9"
   }
