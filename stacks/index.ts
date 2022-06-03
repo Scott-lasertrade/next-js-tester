@@ -8,7 +8,10 @@ export const DATABASE = "medii";
 export default async function main(app: sst.App): Promise<void> {
   // Set default runtime for all functions
   app.setDefaultFunctionProps({
-    runtime: "nodejs14.x",
+    runtime: "nodejs16.x",
+    bundle: {
+      format: "esm",
+    },
   });
 
   app
