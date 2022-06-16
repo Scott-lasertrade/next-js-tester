@@ -59,6 +59,6 @@ console.log(configuration);
 export default async function handler(req, res) {
   const { email, password, given_name } = req.body;
   const { API } = withSSRContext({ req });
-  const result = await API.post("api", "/public", { value: 1, name: "value" });
+  const result = await API.post("api", "/private", { value: 1, name: "value" });
   res.status(200).json({ result });
 }
