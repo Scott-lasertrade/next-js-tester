@@ -1,4 +1,4 @@
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 
 /**
  * @param db {Kysely<any>}
@@ -8,9 +8,7 @@ export async function up(db) {
     .createTable("tester")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn("name", "varchar", (col) => col.unique())
-    .addColumn("created_at", "timestamp", (col) =>
-      col.defaultTo(db.raw("NOW()"))
-    )
+    .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
     .execute();
 
   await db

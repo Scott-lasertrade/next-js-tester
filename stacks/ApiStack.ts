@@ -31,7 +31,7 @@ export function ApiStack({ stack }: StackContext) {
       "GET /private": {
         function: "src/private.main",
       },
-      "GET /": {
+      "POST /public": {
         function: "src/example.main",
         authorizer: "none",
       },

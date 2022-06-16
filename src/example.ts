@@ -1,5 +1,6 @@
 import db from "./database";
 import { listTesters } from "./database/Entity/actions";
+import middify from "./middify";
 
 const baseHandler = async (event: any) => {
   try {
@@ -8,12 +9,11 @@ const baseHandler = async (event: any) => {
       statusCode: 200,
       body: JSON.stringify(testers),
     };
-  } catch (e) {
+  } catch (e: any) {
     return {
       statusCode: 500,
       body: JSON.stringify({ error: e.message }),
     };
   }
 };
-
-export const main = baseHandler;
+export const main = middify({})(baseHandler);

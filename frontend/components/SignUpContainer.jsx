@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button, notification } from "antd";
-import API from "@aws-amplify/api-rest";
+// import API from "@aws-amplify/api-rest";
 
 const SignUpContainer = ({
   signUp,
@@ -13,25 +13,25 @@ const SignUpContainer = ({
   screens,
 }) => {
   const [loadingRoute, setLoadingRoute] = useState(false);
-  const publicRoute = (e) => {
-    setLoadingRoute(true);
-    return API.get("api", "/")
-      .then((res) => {
-        console.log(res);
-        notification["success"]({
-          message: "Successfully called api.",
-          description: `${res}`,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        notification["error"]({
-          message: "Failed to call api",
-          description: `${err}`,
-        });
-      })
-      .finally(() => setLoadingRoute(false));
-  };
+  // const publicRoute = (e) => {
+  //   setLoadingRoute(true);
+  //   return API.post("api", "/public", { value: 1, name: "value" })
+  //     .then((res) => {
+  //       console.log(res);
+  //       notification["success"]({
+  //         message: "Successfully called api.",
+  //         description: `${res}`,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       notification["error"]({
+  //         message: "Failed to call api",
+  //         description: `${err}`,
+  //       });
+  //     })
+  //     .finally(() => setLoadingRoute(false));
+  // };
   return (
     <div className="auth-form-container auth-right-container">
       <form onSubmit={signUp}>
@@ -90,9 +90,7 @@ const SignUpContainer = ({
           <></>
         )}
       </form>
-      <Button onClick={publicRoute} loading={loadingRoute}>
-        TEST PUBLIC ROUTE
-      </Button>
+      <Button loading={loadingRoute}>TEST PUBLIC ROUTE</Button>
     </div>
   );
 };

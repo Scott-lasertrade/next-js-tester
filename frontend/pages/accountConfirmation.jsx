@@ -2,10 +2,18 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { notification, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Auth } from "@aws-amplify/auth";
+// import { Auth } from "@aws-amplify/auth";
+import { CognitoUserPool, CognitoUser } from "amazon-cognito-identity-js";
+import config from "../config";
+
+const poolData = {
+  UserPoolId: config.cognito.USER_POOL_ID, // Your user pool id here
+  ClientId: config.cognito.APP_CLIENT_ID, // Your client id here
+};
+const userPool = new CognitoUserPool(poolData);
 
 const AccountConfirmationPage = () => {
-  const Router = useRouter();
+  const router = useRouter();
   const [loaded, setLoaded] = useState(false);
   const [email, setEmail] = useState("");
   const [confirmedAccount, setConfirmedAccount] = useState(false);
@@ -15,11 +23,29 @@ const AccountConfirmationPage = () => {
     setEmail(new URLSearchParams(window.location.search).get("email"));
   }, []);
 
+  const confirmAccount = (cognitoUser, code) => {
+    return new Promise((resolve, reject) => {
+      cognitoUser.confirmRegistration(code, true, function (err, result) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(result);
+      });
+    });
+  };
+
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     if (code && email) {
       console.log(`${code} ${email}`);
-      Auth.confirmSignUp(email, code)
+      const userData = {
+        Username: email,
+        Pool: userPool,
+      };
+
+      const cognitoUser = new CognitoUser(userData);
+      confirmAccount(cognitoUser, code)
         .then(() => {
           setConfirmedAccount(true);
           notification["success"]({
@@ -34,7 +60,7 @@ const AccountConfirmationPage = () => {
             error.message ===
             "User cannot be confirmed. Current status is CONFIRMED"
           ) {
-            Router.push("/sign-in");
+            router.push("/sign-in");
           }
         })
         .finally(() => setLoaded(true));
@@ -48,7 +74,7 @@ const AccountConfirmationPage = () => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              Router.push("/sign-in");
+              router.push("/sign-in");
             }}
           >
             <h1 className="auth-headings-alt">
