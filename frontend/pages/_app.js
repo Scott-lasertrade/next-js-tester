@@ -1,20 +1,20 @@
 import "antd/dist/antd.css";
 import "../scss/styles.scss";
-// import config from "../config";
-// import { Amplify } from "@aws-amplify/core";
-// import Auth from "@aws-amplify/auth";
+import config from "../config";
+import { Amplify } from "@aws-amplify/core";
+import Auth from "@aws-amplify/auth";
 
-// const getAuth = async () => {
-//   try {
-//     const auth = await Auth.currentSession();
-//     if (auth) {
-//       return `Bearer ${auth.getAccessToken().getJwtToken()}`;
-//     }
-//     return "Bearer";
-//   } catch (e) {
-//     return "";
-//   }
-// };
+const getAuth = async () => {
+  try {
+    const auth = await Auth.currentSession();
+    if (auth) {
+      return `Bearer ${auth.getAccessToken().getJwtToken()}`;
+    }
+    return "Bearer";
+  } catch (e) {
+    return "";
+  }
+};
 
 // const configuration = {
 //   Auth: {

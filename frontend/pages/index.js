@@ -1,17 +1,10 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-// import { Auth } from "@aws-amplify/auth";
+import { Auth } from "@aws-amplify/auth";
 import { notification, Grid } from "antd";
 // import { switchPages } from "~/utilities/auth/layoutHelper";
 import SignUpContainer from "../components/SignUpContainer";
 import SideBanner from "../components/SideBanner";
-import {
-  CognitoUserPool,
-  CognitoUserAttribute,
-  CognitoUser,
-} from "amazon-cognito-identity-js";
-import config from "../config";
-
 const { useBreakpoint } = Grid;
 
 export const switchPages = (page) => {
@@ -82,64 +75,49 @@ const SignUp = () => {
     return false;
   };
 
-  const valuesToAttributes = ({ email, given_name }) => {
-    const attributeEmail = new CognitoUserAttribute({
-      Name: "email",
-      Value: email,
-    });
-    const attributeGivenName = new CognitoUserAttribute({
-      Name: "given_name",
-      Value: given_name,
-    });
-    return [attributeEmail, attributeGivenName];
-  };
-
-  const register = (userPool, email, password, attribute_list) => {
-    return new Promise((resolve, reject) => {
-      userPool.signUp(email, password, attribute_list, null, (err, result) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        const cognitoUser = result.user;
-        resolve(cognitoUser);
-      });
-    });
-  };
-
   const submit = async () => {
-    // try {
-    setLoading(true);
-    const attributes = valuesToAttributes({ email, given_name: firstName });
-    console.log(attributes);
-    const poolData = {
-      UserPoolId: config.cognito.USER_POOL_ID, // Your user pool id here
-      ClientId: config.cognito.APP_CLIENT_ID, // Your client id here
-    };
-    const userPool = new CognitoUserPool(poolData);
-    register(userPool, email, password, attributes)
-      .then((usr) => {
-        notification["success"]({
-          message: `Account Registered.`,
-          description: `${usr.getUsername()} has been registered, please check your email to continue.`,
+    try {
+      setLoading(true);
+      // const user = await Auth.signUp({
+      //   username: email,
+      //   password: password,
+      //   attributes: {
+      //     email: email,
+      //     given_name: firstName,
+      //   },
+      // });
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          given_name: firstName,
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log(data);
+
+      // notification["success"]({
+      //   message: `Account Registered.`,
+      //   description: `${email} has been registered, please check your email to continue.`,
+      // });
+      // setAccountRegistered(true);
+    } catch (error) {
+      if (error.code === "UsernameExistsException") {
+        notification["warning"]({
+          message: `Account already exists.`,
+          description: `${email} already exists within our system, try logging in`,
         });
-        setAccountRegistered(true);
-        console.log("Created User", usr);
-      })
-      .catch((err) => {
-        if (err.code === "UsernameExistsException") {
-          notification["warning"]({
-            message: `Account already exists.`,
-            description: `${email} already exists within our system, try logging in`,
-          });
-        } else {
-          notification["warning"]({
-            message: `Error: ${err.code}`,
-            description: `${err.message}`,
-          });
-        }
-      })
-      .finally(() => setLoading(false));
+      } else {
+        notification["warning"]({
+          message: `Error: ${error.code}`,
+          description: `${error.message}`,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signUp = (e) => {
