@@ -6,12 +6,6 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { CognitoUserPool, CognitoUser } from "amazon-cognito-identity-js";
 import config from "../config";
 
-const poolData = {
-  UserPoolId: config.cognito.USER_POOL_ID, // Your user pool id here
-  ClientId: config.cognito.APP_CLIENT_ID, // Your client id here
-};
-const userPool = new CognitoUserPool(poolData);
-
 const AccountConfirmationPage = () => {
   const router = useRouter();
   const [loaded, setLoaded] = useState(false);
@@ -38,6 +32,11 @@ const AccountConfirmationPage = () => {
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     if (code && email) {
+      const poolData = {
+        UserPoolId: config.cognito.USER_POOL_ID, // Your user pool id here
+        ClientId: config.cognito.APP_CLIENT_ID, // Your client id here
+      };
+      const userPool = new CognitoUserPool(poolData);
       console.log(`${code} ${email}`);
       const userData = {
         Username: email,

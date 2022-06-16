@@ -13,11 +13,6 @@ import {
 import config from "../config";
 
 const { useBreakpoint } = Grid;
-const poolData = {
-  UserPoolId: config.cognito.USER_POOL_ID, // Your user pool id here
-  ClientId: config.cognito.APP_CLIENT_ID, // Your client id here
-};
-const userPool = new CognitoUserPool(poolData);
 
 export const switchPages = (page) => {
   if (page === "sign-in") {
@@ -117,6 +112,11 @@ const SignUp = () => {
     setLoading(true);
     const attributes = valuesToAttributes({ email, given_name: firstName });
     console.log(attributes);
+    const poolData = {
+      UserPoolId: config.cognito.USER_POOL_ID, // Your user pool id here
+      ClientId: config.cognito.APP_CLIENT_ID, // Your client id here
+    };
+    const userPool = new CognitoUserPool(poolData);
     register(userPool, email, password, attributes)
       .then((usr) => {
         notification["success"]({
