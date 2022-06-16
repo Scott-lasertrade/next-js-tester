@@ -13,25 +13,25 @@ const SignUpContainer = ({
   screens,
 }) => {
   const [loadingRoute, setLoadingRoute] = useState(false);
-  // const publicRoute = (e) => {
-  //   setLoadingRoute(true);
-  //   return API.post("api", "/public", { value: 1, name: "value" })
-  //     .then((res) => {
-  //       console.log(res);
-  //       notification["success"]({
-  //         message: "Successfully called api.",
-  //         description: `${res}`,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       notification["error"]({
-  //         message: "Failed to call api",
-  //         description: `${err}`,
-  //       });
-  //     })
-  //     .finally(() => setLoadingRoute(false));
-  // };
+  const publicRoute = async (e) => {
+    setLoadingRoute(true);
+
+    const response = await fetch("/api/public");
+    try {
+      const data = await response.json();
+      notification["success"]({
+        message: "Successfully called api.",
+        description: `${data.result[0].name}`,
+      });
+      console.log(data);
+    } catch (err) {
+      notification["error"]({
+        message: "OPPS",
+        description: `${err}`,
+      });
+    }
+    setLoadingRoute(false);
+  };
   return (
     <div className="auth-form-container auth-right-container">
       <form onSubmit={signUp}>
@@ -90,7 +90,9 @@ const SignUpContainer = ({
           <></>
         )}
       </form>
-      <Button loading={loadingRoute}>TEST PUBLIC ROUTE</Button>
+      <Button onClick={publicRoute} loading={loadingRoute}>
+        TEST PUBLIC ROUTE
+      </Button>
     </div>
   );
 };
